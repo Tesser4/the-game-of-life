@@ -3,24 +3,26 @@ const dom = {
   container: document.querySelector('#gridContainer'),
   startBtn: document.querySelector('#start'),
   clearBtn: document.querySelector('#clear'),
+  randomBtn: document.querySelector('#random'),
 }
 
 const params = {
   gridRows: 60,
   gridCols: 100,
   delay: 100,
+  random: false,
 }
 
 let state
 let interval
 
-const getInitialState = ({ gridRows, gridCols }) => {
+const getInitialState = ({ gridRows, gridCols, random }) => {
   let playing = false
   let grid = []
   for (let i = 0; i < gridRows; i += 1) {
     grid[i] = []
     for (let j = 0; j < gridCols; j += 1) {
-      grid[i][j] = 0
+      grid[i][j] = random ? Math.floor(Math.random() * 2) : 0
     }
   }
 
@@ -120,10 +122,17 @@ const startBtnHandler = () => {
 }
 
 const clearBtnHandler = () => {
+  params.random = false
+  init()
+}
+
+const randomBtnHandler = () => {
+  params.random = true
   init()
 }
 
 dom.startBtn.addEventListener('click', startBtnHandler)
 dom.clearBtn.addEventListener('click', clearBtnHandler)
+dom.randomBtn.addEventListener('click', randomBtnHandler)
 
 window.onload = init
