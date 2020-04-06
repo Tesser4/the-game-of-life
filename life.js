@@ -72,15 +72,6 @@ const applyRules = (row, col, isAlive) => {
 const getNextGeneration = ({ grid }) => grid
   .map((x, i) => x.map((y, j) => applyRules(i, j, !!y) ? 1 : 0))
 
-const cellClickHandler = evt => {
-  const cell = evt.target
-  const prevCellState = cell.getAttribute('class')
-  const newCellState = prevCellState === 'dead' ? 'live' : 'dead'
-  cell.setAttribute('class', newCellState)
-  const [row, col] = cell.id.split('_').map(x => +x)
-  state.grid[row][col] = newCellState === 'live' ? 1 : 0
-}
-
 const initViewGrid = ({ gridRows, gridCols }) => {
   dom.container.innerHTML = ''
   const table = document.createElement('table')
@@ -91,7 +82,6 @@ const initViewGrid = ({ gridRows, gridCols }) => {
       const cell = document.createElement('td')
       cell.setAttribute('id', `${i}_${j}`)
       cell.setAttribute('class', 'dead')
-      cell.addEventListener('click', cellClickHandler)
       tr.appendChild(cell)
     }
     table.appendChild(tr)
@@ -113,6 +103,15 @@ const init = () => {
   updateView(state)
 }
 
+const cellClickHandler = evt => {
+  const cell = evt.target
+  const prevCellState = cell.getAttribute('class')
+  const newCellState = prevCellState === 'dead' ? 'live' : 'dead'
+  cell.setAttribute('class', newCellState)
+  const [row, col] = cell.id.split('_').map(Number)
+  state.grid[row][col] = newCellState === 'live' ? 1 : 0
+}
+
 const startBtnHandler = () => {
   state.playing = !state.playing
   dom.startBtn.textContent = state.playing ? 'Pause' : 'Continue'
@@ -131,6 +130,7 @@ const randomBtnHandler = () => {
   init()
 }
 
+dom.container.addEventListener('click', cellClickHandler)
 dom.startBtn.addEventListener('click', startBtnHandler)
 dom.clearBtn.addEventListener('click', clearBtnHandler)
 dom.randomBtn.addEventListener('click', randomBtnHandler)
